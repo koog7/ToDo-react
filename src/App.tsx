@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import AddTaskForm from "./Components/AddTaskForm.tsx";
+import Task from "./Components/Task.tsx";
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    interface TaskType {
+        id: string;
+        text: string;
+    }
+
+    const [tasks, setTasks] = useState<TaskType[]>([
+        { id: "1", text: 'Прогулка по набережной' },
+        { id: "2", text: 'Поход в горы' },
+        { id: "3", text: 'Отдых дома с родными' }
+    ]);
+
+    const deleteTask = (taskId: string) => {
+        setTasks(tasks.filter(task => task.id !== taskId));
+    };
+
+    const addTask = (taskText: string) => {
+        const newTask: TaskType = {
+            id: (tasks.length + 1).toString(),
+            text: taskText,
+        };
+        setTasks([...tasks, newTask]);
+    };
+
+    return (
+        <>
+            <AddTaskForm onAdd={addTask} />
+            {tasks.map((task) => (
+                <Task key={task.id} task={task} deleteTask={() => deleteTask(task.id)} />
+            ))}
+        </>
+    );
 }
 
-export default App
+export default App;
